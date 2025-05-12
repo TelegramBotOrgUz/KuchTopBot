@@ -1,0 +1,16 @@
+server:
+  port: 8090
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/willup
+    username: postgres
+    password: root123
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+bot:
+  token: 7531833643:AAG9o0sQPIief9bm9-unEuKaJmfjb22XkCg
+  username: KuchtopBot
