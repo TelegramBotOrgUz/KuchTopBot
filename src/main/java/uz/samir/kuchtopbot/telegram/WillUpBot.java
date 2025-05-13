@@ -6,9 +6,12 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import uz.samir.kuchtopbot.controller.TelegramBotMessageController;
 import uz.samir.kuchtopbot.model.User;
 import uz.samir.kuchtopbot.service.BotService;
 import uz.samir.kuchtopbot.service.UserService;
+import uz.samir.kuchtopbot.telegram.handler.StartCommandHandler;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +25,8 @@ public class WillUpBot extends TelegramLongPollingBot {
 
     private final UserService userService;
     private final BotService botService;
+    private final StartCommandHandler startCommandHandler;
+    private final TelegramBotMessageController messageController;
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -30,24 +35,20 @@ public class WillUpBot extends TelegramLongPollingBot {
             Long chatId = update.getMessage().getChatId();
 
             if ("/start".equals(messageText)) {
+
+                startCommandHandler.startUserCommand(chatId);
+
                 User user = userService.registerIfNotExists(update.getMessage().getFrom(), chatId);
-                SendMessage message = new SendMessage(chatId.toString(),
-                        "👋 Assalomu alaykum, " + user.getFirstName() + "! KuchTopBot'ga xush kelibsiz.\n\n🚀 Bugundan boshlab sizning NoFap yo‘lingizni birga yuramiz.");
-                try {
-                    execute(message);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return;
+                String text =
+                        "👋 Assalomu alaykum, " + user.getFirstName() + "! KuchTopBot'ga xush kelibsiz.\n\n🚀 Bugundan boshlab sizning NoFap yo‘lingizni birga yuramiz.";
+                messageController.sendMessage(chatId, text);
+
+
+            }else {
+                String response = botService.handleMessage(update.getMessage());
+                messageController.sendMessage(chatId, response);
             }
 
-            String response = botService.handleMessage(update.getMessage());
-            SendMessage message = new SendMessage(chatId.toString(), response);
-            try {
-                execute(message);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 

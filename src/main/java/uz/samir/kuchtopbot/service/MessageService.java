@@ -3,30 +3,24 @@ package uz.samir.kuchtopbot.service;
 import lombok.RequiredArgsConstructor;
 import org.jvnet.hk2.annotations.Service;
 import org.springframework.context.MessageSource;
+import uz.samir.kuchtopbot.service.cache.UserStateService;
 
 import java.util.Locale;
 
 @Service
-@RequiredArgsConstructor
 public class MessageService {
 
     private final MessageSource messageSource;
+    private final UserStateService userStateService;
 
-    public String get(String key, Locale locale, Object... args) {
-        return messageSource.getMessage(key, args, locale);
+    public MessageService(MessageSource messageSource, UserStateService userStateService) {
+        this.messageSource = messageSource;
+        this.userStateService = userStateService;
     }
 
-    public String get(String key, String lang, Object... args) {
-        Locale locale = resolveLocale(lang);
-        return get(key, locale, args);
-    }
-
-    public Locale resolveLocale(String lang) {
-        if (lang == null) return Locale.ENGLISH;
-        return switch (lang.toUpperCase()) {
-            case "UZ" -> new Locale("uz");
-            case "RU" -> new Locale("ru");
-            default -> Locale.ENGLISH;
-        };
+    public String getMessage(Long chatId, String key) {
+        String lang = userStateService.getLanguage(chatId); // Foydalanuvchi tilini Redis'dan olish
+        Locale locale = new Locale(lang);
+        return messageSource.getMessage(key, null, locale);
     }
 }

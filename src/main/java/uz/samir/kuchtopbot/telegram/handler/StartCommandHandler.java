@@ -6,7 +6,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import uz.samir.kuchtopbot.buttons.KeyboardUtils;
+import uz.samir.kuchtopbot.controller.TelegramBotMessageController;
 import uz.samir.kuchtopbot.service.MessageService;
+import uz.samir.kuchtopbot.service.TelegramBotService;
 import uz.samir.kuchtopbot.service.UserService;
 import java.util.List;
 
@@ -14,23 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StartCommandHandler {
 
-    private final UserService userService;
+    private final MessageService messages;
+    private final TelegramBotMessageController telegramBotMessageController;
 
-    private SendMessage sendLanguageSelection(Long chatId) {
-        KeyboardRow row = new KeyboardRow();
-        row.add("🇺🇿 O‘zbekcha");
-        row.add("🇷🇺 Русский");
-        row.add("🇬🇧 English");
-
-        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
-        markup.setKeyboard(List.of(row));
-        markup.setResizeKeyboard(true);
-        markup.setOneTimeKeyboard(true);
-
-        return SendMessage.builder()
-                .chatId(chatId.toString())
-                .text("Iltimos, tilni tanlang:")
-                .replyMarkup(markup)
-                .build();
+    public void startUserCommand(long chatId) {
+        telegramBotMessageController.sendMessage(chatId, messages.getMessage(chatId, "choose_language"), KeyboardUtils.getLanguageKeyboard());
     }
 }
