@@ -2,6 +2,7 @@ package uz.samir.kuchtopbot.service.modelService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uz.samir.kuchtopbot.model.Streak;
 import uz.samir.kuchtopbot.model.User;
 import uz.samir.kuchtopbot.repository.UserRepository;
 
@@ -55,5 +56,9 @@ public class UserService {
     public User getUser(Long chatId) {
         Optional<User> optionalUser = userRepository.findByChatId(chatId);
         return optionalUser.orElse(null);
+    }
+
+    public Optional<Streak> getActiveStreak(Long userId) {
+        return streakService.getActiveStreak(userId);
     }
 }
