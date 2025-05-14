@@ -1,9 +1,8 @@
-package uz.samir.kuchtopbot.service;
+package uz.samir.kuchtopbot.service.bot;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 @Service
 public class TelegramBotService {

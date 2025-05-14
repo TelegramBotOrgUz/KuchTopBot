@@ -1,6 +1,5 @@
-package uz.samir.kuchtopbot.service;
+package uz.samir.kuchtopbot.service.bot;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.context.MessageSource;
 import uz.samir.kuchtopbot.service.cache.UserStateService;

@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import uz.samir.kuchtopbot.service.MessageService;
+import uz.samir.kuchtopbot.service.bot.MessageService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,72 +35,47 @@ public class KeyboardUtils {
         return replyKeyboardMarkup;
     }
 
-
-    public static ReplyKeyboardRemove removeKeyboard() {
-        return new ReplyKeyboardRemove(true);
-    }
-
-
-    public ReplyKeyboardMarkup getPhoneNumberKeyboard(Long chatId) {
+    public ReplyKeyboardMarkup getUserMenuKeyboard(long chatId) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         keyboardMarkup.setResizeKeyboard(true);
         keyboardMarkup.setOneTimeKeyboard(true);
 
-        KeyboardRow row = new KeyboardRow();
-        KeyboardButton button = new KeyboardButton(messageService.getMessage(chatId, "button_send_contact"));
-        button.setRequestContact(true); // 📌 Foydalanuvchi contact yuborishiga ruxsat beradi
-        row.add(button);
+        return getReplyKeyboardMarkup(messageService, chatId, keyboardMarkup);
+    }
+
+    public static ReplyKeyboardMarkup getPreStartMenu(MessageService messageService, long chatId) {
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        keyboardMarkup.setResizeKeyboard(true);
+        keyboardMarkup.setOneTimeKeyboard(true);
 
         List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+        row.add(new KeyboardButton(messageService.getMessage(chatId, "start_nofap")));
         keyboard.add(row);
 
         keyboardMarkup.setKeyboard(keyboard);
         return keyboardMarkup;
     }
 
-    public static ReplyKeyboardMarkup getAdminMenuKeyboard() {
+    public static ReplyKeyboardMarkup getActiveNofapMenu(MessageService messageService, long chatId) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        keyboardMarkup.setResizeKeyboard(true); // Kichraytirilgan klaviatura
-        keyboardMarkup.setOneTimeKeyboard(false); // Doimiy klaviatura
+        keyboardMarkup.setResizeKeyboard(true);
+        keyboardMarkup.setOneTimeKeyboard(false);
 
-        List<KeyboardRow> keyboard = new ArrayList<>();
-
-        // 1-qator
-        KeyboardRow row1 = new KeyboardRow();
-        row1.add(new KeyboardButton("➕ Mahsulot qo'shish"));  // Product CRUD
-        row1.add(new KeyboardButton("📋 Mahsulotlar ro‘yxati"));
-
-        // 2-qator
-        KeyboardRow row2 = new KeyboardRow();
-        row2.add(new KeyboardButton("🔑 Admin qo‘shish"));
-        row2.add(new KeyboardButton("📋 Adminlar ro‘yxati"));  // Admin uchun statistika
-
-
-        KeyboardRow row3 = new KeyboardRow();
-        row3.add(new KeyboardButton("\uD83D\uDCE5 Buyurtmalar"));
-
-        keyboard.add(row1);
-        keyboard.add(row2);
-        keyboard.add(row3);
-
-        keyboardMarkup.setKeyboard(keyboard);
-        return keyboardMarkup;
+        return getReplyKeyboardMarkup(messageService, chatId, keyboardMarkup);
     }
 
-    public ReplyKeyboardMarkup getUserMenuKeyboard(long chatId) {
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        keyboardMarkup.setResizeKeyboard(true); // Kichraytirilgan klaviatura
-        keyboardMarkup.setOneTimeKeyboard(false); // Doimiy klaviatura
 
+    private static ReplyKeyboardMarkup getReplyKeyboardMarkup(MessageService messageService, long chatId, ReplyKeyboardMarkup keyboardMarkup) {
         List<KeyboardRow> keyboard = new ArrayList<>();
 
-        // 1-qator
         KeyboardRow row1 = new KeyboardRow();
-        row1.add(new KeyboardButton(messageService.getMessage(chatId, "menu_product")));
+        row1.add(new KeyboardButton(messageService.getMessage(chatId, "menu_progress")));
+        row1.add(new KeyboardButton(messageService.getMessage(chatId, "menu_motivation")));
 
-        // 2-qator
         KeyboardRow row2 = new KeyboardRow();
-        row2.add(new KeyboardButton(messageService.getMessage(chatId, "order")));  // Admin uchun statistika
+        row2.add(new KeyboardButton(messageService.getMessage(chatId, "menu_reset")));
+        row2.add(new KeyboardButton(messageService.getMessage(chatId, "menu_settings")));
 
         keyboard.add(row1);
         keyboard.add(row2);
