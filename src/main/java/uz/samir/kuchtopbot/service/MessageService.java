@@ -1,7 +1,7 @@
 package uz.samir.kuchtopbot.service;
 
 import lombok.RequiredArgsConstructor;
-import org.jvnet.hk2.annotations.Service;
+import org.springframework.stereotype.Service;
 import org.springframework.context.MessageSource;
 import uz.samir.kuchtopbot.service.cache.UserStateService;
 
