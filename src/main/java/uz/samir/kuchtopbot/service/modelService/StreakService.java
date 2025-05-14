@@ -55,4 +55,8 @@ public class StreakService {
 
         return new UserStatsDto(current, best, start, lastRelapse);
     }
+
+    public Optional<Streak> getActiveStreak(Long userId) {
+        return streakRepository.findByUserIdAndEndedAtIsNull(userId);
+    }
 }

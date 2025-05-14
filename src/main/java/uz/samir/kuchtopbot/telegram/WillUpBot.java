@@ -69,7 +69,7 @@ public class WillUpBot extends TelegramLongPollingBot {
             } else if (messageText.equals(messageService.getMessage(chatId, "menu_motivation"))) {
                 motivationHandler.handleMotivation(chatId);
             } else if (messageText.equals(messageService.getMessage(chatId, "menu_reset"))) {
-                resetHandler.handleReset(chatId);
+                resetHandler.askForRelapseReason(chatId);
             }
         }
     }
