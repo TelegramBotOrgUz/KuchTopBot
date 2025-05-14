@@ -13,6 +13,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final StreakService streakService;
 
     public User registerIfNotExists(org.telegram.telegrambots.meta.api.objects.User telegramUser, Long chatId) {
         return userRepository.findByChatId(chatId).orElseGet(() -> {
@@ -41,5 +42,22 @@ public class UserService {
             user.setNofapStartedAt(null); // Clear the NoFap start date
             userRepository.save(user); // Save changes to the database
         });
+    }
+
+    public void startNofap(Long chatId) {
+        Optional<User> optionalUser = userRepository.findByChatId(chatId);
+        optionalUser.ifPresent(user -> {
+            // NoFap journey'ni boshlash va `nofapStartedAt` ni yangilash
+            user.setNofapStartedAt(LocalDateTime.now());
+            userRepository.save(user); // Saqlash
+        });
+
+        // Yangi Streak yaratish
+        streakService.startNewStreak(chatId);
+    }
+
+    public User getUser(Long chatId) {
+        Optional<User> optionalUser = userRepository.findByChatId(chatId);
+        return optionalUser.orElse(null);
     }
 }
