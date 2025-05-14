@@ -9,8 +9,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import uz.samir.kuchtopbot.controller.TelegramBotMessageController;
 import uz.samir.kuchtopbot.model.User;
+import uz.samir.kuchtopbot.model.template.BotState;
 import uz.samir.kuchtopbot.service.BotService;
 import uz.samir.kuchtopbot.service.UserService;
+import uz.samir.kuchtopbot.service.cache.UserStateService;
 import uz.samir.kuchtopbot.telegram.handler.StartCommandHandler;
 
 @Component
@@ -27,6 +29,7 @@ public class WillUpBot extends TelegramLongPollingBot {
     private final BotService botService;
     private final StartCommandHandler startCommandHandler;
     private final TelegramBotMessageController messageController;
+    private final UserStateService userStateService;
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -35,18 +38,11 @@ public class WillUpBot extends TelegramLongPollingBot {
             Long chatId = update.getMessage().getChatId();
 
             if ("/start".equals(messageText)) {
-
                 startCommandHandler.startUserCommand(chatId);
-
+                userStateService.saveState(chatId, BotState.CHOOSE_LANGUAGE.name());
+            } else if (userStateService.getState(chatId).equals(BotState.CHOOSE_LANGUAGE.name())) {
                 User user = userService.registerIfNotExists(update.getMessage().getFrom(), chatId);
-                String text =
-                        "👋 Assalomu alaykum, " + user.getFirstName() + "! KuchTopBot'ga xush kelibsiz.\n\n🚀 Bugundan boshlab sizning NoFap yo‘lingizni birga yuramiz.";
-                messageController.sendMessage(chatId, text);
-
-
-            }else {
-                String response = botService.handleMessage(update.getMessage());
-                messageController.sendMessage(chatId, response);
+                startCommandHandler.languageCommand(chatId, messageText,user);
             }
 
         }
