@@ -1,4 +1,4 @@
-package uz.samir.kuchtopbot.service;
+package uz.samir.kuchtopbot.service.bot;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import uz.samir.kuchtopbot.controller.TelegramBotMessageController;
 import uz.samir.kuchtopbot.event.BotMessageEvent;
-import uz.samir.kuchtopbot.service.TelegramBotService;
+import uz.samir.kuchtopbot.service.bot.TelegramBotService;
 
 @Component
 @RequiredArgsConstructor

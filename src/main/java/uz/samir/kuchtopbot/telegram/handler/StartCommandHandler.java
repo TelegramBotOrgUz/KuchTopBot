@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 import uz.samir.kuchtopbot.buttons.KeyboardUtils;
 import uz.samir.kuchtopbot.controller.TelegramBotMessageController;
 import uz.samir.kuchtopbot.model.User;
-import uz.samir.kuchtopbot.service.MessageService;
+import uz.samir.kuchtopbot.model.template.BotState;
+import uz.samir.kuchtopbot.service.bot.MessageService;
 import uz.samir.kuchtopbot.service.cache.UserStateService;
 
 
@@ -34,7 +35,11 @@ public class StartCommandHandler {
             default -> lang = "uz";
         }
         userStateService.saveLanguage(chatId, lang);
-        String message = String.format(messages.getMessage(chatId, "welcome_message"), user.getFirstName());
+        String message = String.format(messages.getMessage(chatId, "welcome_message"), user.getFirstName()) +
+                "\n" +
+                messages.getMessage(chatId, "start_nofap_message");
+
         telegramBotMessageController.sendMessage(chatId, message);
+        userStateService.saveState(chatId, BotState.START_NOFAP.name());
     }
 }

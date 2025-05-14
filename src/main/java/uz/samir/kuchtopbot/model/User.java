@@ -18,18 +18,18 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue
-    private Long id;
-    private Long chatId;
-    private String username;
-    private String firstName;
-    private String lastName;
-    private LocalDateTime registeredAt;
-    private LocalDateTime lastRelapseAt;
-    private LocalDateTime lastCheckIn;
-    private int streak;
-    private boolean active;
+    private Long id; // Foydalanuvchini noyob IDsi (DB uchun)
 
-    // Qo‘shimcha: rekord ketma-ket kunlar
-    private int currentStreak;
-    private int bestStreak;
+    private Long chatId; // Telegram chat ID (foydalanuvchini aniqlash uchun)
+    private String username; // Telegram username (agar mavjud bo‘lsa)
+    private String firstName; // Foydalanuvchining ismi
+    private String lastName; // Foydalanuvchining familiyasi (agar mavjud bo‘lsa)
+
+    private LocalDateTime registeredAt; // Botga birinchi marta kirgan vaqti
+    private LocalDateTime lastCheckIn; // Oxirgi kunlik belgilash (check-in) vaqti
+
+    private int streak; // Hozirgi ketma-ket kunlar soni
+    private boolean active; // Foydalanuvchi botdan foydalanayotgan holatdami
+
+    private LocalDateTime nofapStartedAt; // NoFap journey qachon boshlangan
 }
