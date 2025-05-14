@@ -45,15 +45,11 @@ public class UserService {
     }
 
     public void startNofap(Long chatId) {
-        Optional<User> optionalUser = userRepository.findByChatId(chatId);
-        optionalUser.ifPresent(user -> {
-            // NoFap journey'ni boshlash va `nofapStartedAt` ni yangilash
+        userRepository.findByChatId(chatId).ifPresent(user -> {
             user.setNofapStartedAt(LocalDateTime.now());
-            userRepository.save(user); // Saqlash
+            userRepository.save(user);
+            streakService.startNewStreak(user.getId());
         });
-
-        // Yangi Streak yaratish
-        streakService.startNewStreak(chatId);
     }
 
     public User getUser(Long chatId) {

@@ -63,13 +63,9 @@ public class WillUpBot extends TelegramLongPollingBot {
                     messageText.equals(messageService.getMessage(chatId, "start_nofap"))) {
                 startNofapCommandHandler.handleStartNofap(chatId);
             }
-            // Asosiy menyu va boshqa handlerlar
-            else if (userStateService.getState(chatId).equals(BotState.MAIN_MENU.name())) {
-
-            }
             // Progress, motivatsiya va reset handlerlarini chaqirish
             else if (messageText.equals(messageService.getMessage(chatId, "menu_progress"))) {
-                progressHandler.handleProgress(chatId);
+                progressHandler.handleStats(chatId);
             } else if (messageText.equals(messageService.getMessage(chatId, "menu_motivation"))) {
                 motivationHandler.handleMotivation(chatId);
             } else if (messageText.equals(messageService.getMessage(chatId, "menu_reset"))) {
