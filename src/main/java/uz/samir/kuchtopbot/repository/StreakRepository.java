@@ -18,4 +18,6 @@ public interface StreakRepository extends JpaRepository<Streak, Long> {
 
     @Query("SELECT s FROM Streak s WHERE s.userId = :userId AND s.relapsed = true ORDER BY s.endedAt DESC LIMIT 1")
     Optional<Streak> findLastRelapse(@Param("userId") Long userId);
+
+    List<Streak> findAllByUserId(Long userId);
 }

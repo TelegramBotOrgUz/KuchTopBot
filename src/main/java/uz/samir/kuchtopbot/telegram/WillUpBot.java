@@ -45,29 +45,35 @@ public class WillUpBot extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText();
             Long chatId = update.getMessage().getChatId();
 
-            // /start komandasini tahlil qilish
             if ("/start".equals(messageText)) {
                 startCommandHandler.startUserCommand(chatId);
                 userStateService.saveState(chatId, BotState.CHOOSE_LANGUAGE.name());
-            }
-            // Til tanlash jarayoni
-            else if (userStateService.getState(chatId).equals(BotState.CHOOSE_LANGUAGE.name())) {
+            } else if (userStateService.getState(chatId).equals(BotState.CHOOSE_LANGUAGE.name())) {
                 User user = userService.registerIfNotExists(update.getMessage().getFrom(), chatId);
                 startCommandHandler.languageCommand(chatId, messageText, user);
                 mainMenuHandler.showMainMenu(chatId);
-            }
-            // NoFap boshlash jarayoni
-            else if (userStateService.getState(chatId).equals(BotState.START_NOFAP.name()) &&
+            } else if (userStateService.getState(chatId).equals(BotState.START_NOFAP.name()) &&
                     messageText.equals(messageService.getMessage(chatId, "start_nofap"))) {
                 startNofapCommandHandler.handleStartNofap(chatId);
-            }
-            // Progress, motivatsiya va reset handlerlarini chaqirish
-            else if (messageText.equals(messageService.getMessage(chatId, "menu_progress"))) {
+            } else if (messageText.equals(messageService.getMessage(chatId, "menu_progress"))) {
                 progressHandler.handleStats(chatId);
+                progressHandler.showRelapseStats(chatId);
             } else if (messageText.equals(messageService.getMessage(chatId, "menu_motivation"))) {
                 motivationHandler.handleMotivation(chatId);
             } else if (messageText.equals(messageService.getMessage(chatId, "menu_reset"))) {
                 resetHandler.askForRelapseReason(chatId);
+            } else if (userStateService.getState(chatId).equals(BotState.REASON_INPUT.name())) {
+                resetHandler.saveReset(chatId, messageText);
+            }
+        }
+        if (update.hasCallbackQuery()) {
+            String callbackData = update.getCallbackQuery().getData();
+            Long chatId = update.getCallbackQuery().getMessage().getChatId();
+
+            switch (callbackData) {
+                case "no_reason" -> resetHandler.saveReset(chatId,
+                        messageService.getMessage(chatId, "relapse_default_note"));
+                case "write_reason" -> resetHandler.handleResetReason(chatId);
             }
         }
     }

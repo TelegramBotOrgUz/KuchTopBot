@@ -6,6 +6,7 @@ import uz.samir.kuchtopbot.model.RelapseLog;
 import uz.samir.kuchtopbot.repository.RelapseLogRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,5 +26,9 @@ public class RelapseLogService {
 
     public Optional<RelapseLog> getLastRelapse(Long userId) {
         return relapseLogRepository.findTopByUserIdOrderByRelapsedAtDesc(userId);
+    }
+
+    public List<RelapseLog> getAllRelapses(Long userId) {
+        return relapseLogRepository.findAllByUserIdOrderByRelapsedAtDesc(userId);
     }
 }

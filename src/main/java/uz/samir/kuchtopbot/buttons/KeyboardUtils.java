@@ -35,13 +35,6 @@ public class KeyboardUtils {
         return replyKeyboardMarkup;
     }
 
-    public ReplyKeyboardMarkup getUserMenuKeyboard(long chatId) {
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        keyboardMarkup.setResizeKeyboard(true);
-        keyboardMarkup.setOneTimeKeyboard(true);
-
-        return getReplyKeyboardMarkup(messageService, chatId, keyboardMarkup);
-    }
 
     public static ReplyKeyboardMarkup getPreStartMenu(MessageService messageService, long chatId) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
@@ -61,13 +54,13 @@ public class KeyboardUtils {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         keyboardMarkup.setResizeKeyboard(true);
         keyboardMarkup.setOneTimeKeyboard(false);
+        List<KeyboardRow> keyboard = new ArrayList<>();
 
-        return getReplyKeyboardMarkup(messageService, chatId, keyboardMarkup);
+        return getReplyKeyboardMarkup(messageService, chatId, keyboardMarkup, keyboard);
     }
 
 
-    private static ReplyKeyboardMarkup getReplyKeyboardMarkup(MessageService messageService, long chatId, ReplyKeyboardMarkup keyboardMarkup) {
-        List<KeyboardRow> keyboard = new ArrayList<>();
+    private static ReplyKeyboardMarkup getReplyKeyboardMarkup(MessageService messageService, long chatId, ReplyKeyboardMarkup keyboardMarkup, List<KeyboardRow> keyboard) {
 
         KeyboardRow row1 = new KeyboardRow();
         row1.add(new KeyboardButton(messageService.getMessage(chatId, "menu_progress")));
@@ -81,6 +74,20 @@ public class KeyboardUtils {
         keyboard.add(row2);
 
         keyboardMarkup.setKeyboard(keyboard);
+        return keyboardMarkup;
+    }
+
+    public static ReplyKeyboardMarkup getReplyKeyboardMarkupAll(MessageService messageService, long chatId) {
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        keyboardMarkup.setResizeKeyboard(true);
+        keyboardMarkup.setOneTimeKeyboard(false);
+
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+        row.add(new KeyboardButton(messageService.getMessage(chatId, "start_nofap")));
+        keyboard.add(row);
+
+        getReplyKeyboardMarkup(messageService, chatId, keyboardMarkup, keyboard);
         return keyboardMarkup;
     }
 

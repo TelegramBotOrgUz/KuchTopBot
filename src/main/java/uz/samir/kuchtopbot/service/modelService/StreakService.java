@@ -10,6 +10,7 @@ import uz.samir.kuchtopbot.repository.UserRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,5 +59,13 @@ public class StreakService {
 
     public Optional<Streak> getActiveStreak(Long userId) {
         return streakRepository.findByUserIdAndEndedAtIsNull(userId);
+    }
+
+    public Optional<Streak> getById(Long streakId) {
+        return streakRepository.findById(streakId);
+    }
+
+    public List<Streak> getAllByUser(Long userId) {
+        return streakRepository.findAllByUserId(userId);
     }
 }
