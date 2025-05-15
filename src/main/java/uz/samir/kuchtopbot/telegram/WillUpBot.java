@@ -32,9 +32,7 @@ public class WillUpBot extends TelegramLongPollingBot {
     private String username;
 
     private final UserService userService;
-    private final BotService botService;
     private final StartCommandHandler startCommandHandler;
-    private final TelegramBotMessageController messageController;
     private final UserStateService userStateService;
     private final MainMenuHandler mainMenuHandler;
     private final ProgressHandler progressHandler;
