@@ -35,7 +35,6 @@ public class UserService {
         return optionalUser.map(user -> user.getNofapStartedAt() != null).orElse(false);
     }
 
-
     public void resetStreak(Long chatId) {
         Optional<User> optionalUser = userRepository.findByChatId(chatId);
         optionalUser.ifPresent(user -> {
@@ -61,4 +60,6 @@ public class UserService {
     public Optional<Streak> getActiveStreak(Long userId) {
         return streakService.getActiveStreak(userId);
     }
+
+
 }

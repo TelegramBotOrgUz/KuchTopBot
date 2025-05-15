@@ -5,9 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uz.samir.kuchtopbot.buttons.InlineKeyboardUtil;
 import uz.samir.kuchtopbot.controller.TelegramBotMessageController;
+import uz.samir.kuchtopbot.model.Streak;
+import uz.samir.kuchtopbot.model.template.BotState;
 import uz.samir.kuchtopbot.service.bot.MessageService;
+import uz.samir.kuchtopbot.service.cache.UserStateService;
 import uz.samir.kuchtopbot.service.modelService.UserService;
 import uz.samir.kuchtopbot.service.modelService.RelapseLogService;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -18,35 +23,37 @@ public class ResetHandler {
     private final MessageService messageService;
     private final RelapseLogService relapseLogService;
     private final InlineKeyboardUtil inlineKeyboardUtil;
+    private final UserStateService userStateService;
+    private final MainMenuHandler mainMenuHandler;
 
-    public void handleReset(Long chatId) {
-        // Foydalanuvchining NoFap progressini reset qilishdan oldin relapsni loglash
-        var user = userService.getUser(chatId);
-        var optionalStreak = userService.getActiveStreak(user.getId());
-
-        optionalStreak.ifPresent(streak -> {
-            // Relaps sababini so‘rash
-            String relapseReason = "askForRelapseReason(chatId)"; // Yangi metod (foydalanuvchidan sababni so‘rish)
-
-            // Agar sabab bo‘lmasa, default yozish
-            if (relapseReason == null || relapseReason.isEmpty()) {
-                relapseReason = "Siz 'Reset qilish' tugmasini bosdingiz.";
-            }
-
-            // Relaps logini saqlash
-            relapseLogService.saveRelapse(user.getId(), streak.getId(), relapseReason);
-        });
-
-        // Streakni reset qilish
-        userService.resetStreak(chatId);
-
-        // Xabar yuborish
-        String resetMessage = messageService.getMessage(chatId, "reset_message");
-        messageController.sendMessage(chatId, resetMessage);
-    }
 
     public void askForRelapseReason(Long chatId) {
         String message = "Relaps sababini kiriting yoki quyidagi tugmalardan birini tanlang:";
         messageController.sendMessage(chatId, message, inlineKeyboardUtil.askForRelapseReason());
+    }
+
+
+    public void handleResetReason(Long chatId) {
+        userStateService.saveState(chatId, BotState.REASON_INPUT.name());
+        messageController.sendMessage(chatId,
+                messageService.getMessage(chatId, "relapse_reason_request"));
+    }
+
+    public void saveReset(Long chatId, String messageText) {
+        var user = userService.getUser(chatId);
+        Optional<Streak> optionalStreak = userService.getActiveStreak(user.getId());
+
+        optionalStreak.ifPresent(streak ->
+                relapseLogService.saveRelapse(user.getId(), streak.getId(), messageText)
+        );
+
+        userService.resetStreak(chatId);
+
+        userStateService.saveState(chatId, BotState.START_NOFAP.name());
+
+        String resetMessage = messageService.getMessage(chatId, "reset_message");
+        messageController.sendMessage(chatId, resetMessage);
+
+        mainMenuHandler.showMainMenuAll(chatId);
     }
 }
