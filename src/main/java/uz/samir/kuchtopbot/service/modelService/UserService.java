@@ -7,6 +7,7 @@ import uz.samir.kuchtopbot.model.User;
 import uz.samir.kuchtopbot.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,4 +63,7 @@ public class UserService {
     }
 
 
+    public List<User> getAllWithActiveStreak() {
+        return userRepository.findAllByNofapStartedAtIsNotNull();
+    }
 }
