@@ -1,0 +1,22 @@
+server:
+  port: 8090
+
+spring:
+  datasource:
+    url: jdbc:postgresql://dpg-d0io3pidbo4c738n54dg-a:5432/kuchtopdb
+    username: kuchtopdb_user
+    password: RppLuCc4NlAxJ3RcIx8NTYdhm1NOyM44
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+  cache:
+    type: redis
+  data:
+    redis:
+      host: red-d0io7995pdvs739n36kg
+      port: 6379
+
+bot:
+  token: 7531833643:AAG9o0sQPIief9bm9-unEuKaJmfjb22XkCg
+  username: KuchtopBot

@@ -45,7 +45,7 @@ public class ResetHandler {
         messageController.sendMessage(chatId, resetMessage);
     }
 
-    private void askForRelapseReason(Long chatId) {
+    public void askForRelapseReason(Long chatId) {
         String message = "Relaps sababini kiriting yoki quyidagi tugmalardan birini tanlang:";
         messageController.sendMessage(chatId, message, inlineKeyboardUtil.askForRelapseReason());
     }
