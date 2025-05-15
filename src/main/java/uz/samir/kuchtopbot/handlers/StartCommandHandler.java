@@ -8,6 +8,7 @@ import uz.samir.kuchtopbot.model.User;
 import uz.samir.kuchtopbot.model.template.BotState;
 import uz.samir.kuchtopbot.service.bot.MessageService;
 import uz.samir.kuchtopbot.service.cache.UserStateService;
+import uz.samir.kuchtopbot.service.modelService.UserService;
 
 
 @Component
@@ -17,6 +18,8 @@ public class StartCommandHandler {
     private final MessageService messages;
     private final TelegramBotMessageController telegramBotMessageController;
     private final UserStateService userStateService;
+    private final UserService userService;
+    private final MainMenuHandler mainMenuHandler;
 
     public void startUserCommand(long chatId) {
         String text = """
@@ -35,11 +38,18 @@ public class StartCommandHandler {
             default -> lang = "uz";
         }
         userStateService.saveLanguage(chatId, lang);
-        String message = String.format(messages.getMessage(chatId, "welcome_message"), user.getFirstName()) +
-                "\n" +
-                messages.getMessage(chatId, "start_nofap_message");
 
-        telegramBotMessageController.sendMessage(chatId, message);
-        userStateService.saveState(chatId, BotState.START_NOFAP.name());
+        if (!userService.isNofapActive(chatId)) {
+            String message = String.format(messages.getMessage(chatId, "welcome_message"), user.getFirstName()) +
+                    "\n" +
+                    messages.getMessage(chatId, "start_nofap_message");
+
+            telegramBotMessageController.sendMessage(chatId, message);
+            userStateService.saveState(chatId, BotState.START_NOFAP.name());
+        } else {
+            telegramBotMessageController.sendMessage(chatId, messages.getMessage(chatId, "language_changed"));
+            userStateService.saveState(chatId, BotState.MAIN_MENU.name());
+            mainMenuHandler.showMainMenu(chatId);
+        }
     }
 }

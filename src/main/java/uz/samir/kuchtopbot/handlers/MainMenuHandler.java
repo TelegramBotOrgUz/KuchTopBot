@@ -27,6 +27,6 @@ public class MainMenuHandler {
 
     public void showMainMenuAll(long chatId) {
         String title = messageService.getMessage(chatId, "main_menu_title");
-        messageController.sendMessage(chatId,title,KeyboardUtils.getReplyKeyboardMarkupAll(messageService, chatId));
+        messageController.sendMessage(chatId, title, KeyboardUtils.getReplyKeyboardMarkupAll(messageService, chatId));
     }
 }

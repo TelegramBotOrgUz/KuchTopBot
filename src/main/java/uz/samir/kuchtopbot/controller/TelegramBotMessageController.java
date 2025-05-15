@@ -22,6 +22,7 @@ public class TelegramBotMessageController {
         eventPublisher.publishEvent(new BotMessageEvent(this, chatId, text, replyMarkup));
     }
 
+
     public void deleteMessage(long chatId, int messageId) {
         eventPublisher.publishEvent(new BotDeleteEvent(this, chatId, messageId));
     }
