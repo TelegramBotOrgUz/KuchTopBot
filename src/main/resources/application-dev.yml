@@ -2,6 +2,12 @@ server:
   port: 8090
 
 spring:
+  task:
+    scheduling:
+      pool:
+        size: 10
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:postgresql://localhost:5433/willup
     username: postgres

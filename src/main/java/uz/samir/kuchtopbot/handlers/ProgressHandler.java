@@ -1,4 +1,4 @@
-package uz.samir.kuchtopbot.telegram.handler;
+package uz.samir.kuchtopbot.handlers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

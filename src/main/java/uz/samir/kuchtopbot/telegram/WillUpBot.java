@@ -5,19 +5,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import uz.samir.kuchtopbot.controller.TelegramBotMessageController;
 import uz.samir.kuchtopbot.model.User;
 import uz.samir.kuchtopbot.model.template.BotState;
-import uz.samir.kuchtopbot.service.bot.BotService;
 import uz.samir.kuchtopbot.service.bot.MessageService;
 import uz.samir.kuchtopbot.service.modelService.UserService;
 import uz.samir.kuchtopbot.service.cache.UserStateService;
-import uz.samir.kuchtopbot.telegram.handler.StartCommandHandler;
-import uz.samir.kuchtopbot.telegram.handler.StartNofapCommandHandler;
-import uz.samir.kuchtopbot.telegram.handler.MainMenuHandler;
-import uz.samir.kuchtopbot.telegram.handler.ProgressHandler;
-import uz.samir.kuchtopbot.telegram.handler.MotivationHandler;
-import uz.samir.kuchtopbot.telegram.handler.ResetHandler;
+import uz.samir.kuchtopbot.handlers.StartCommandHandler;
+import uz.samir.kuchtopbot.handlers.StartNofapCommandHandler;
+import uz.samir.kuchtopbot.handlers.MainMenuHandler;
+import uz.samir.kuchtopbot.handlers.ProgressHandler;
+import uz.samir.kuchtopbot.handlers.MotivationHandler;
+import uz.samir.kuchtopbot.handlers.ResetHandler;
 
 @Component
 @RequiredArgsConstructor
