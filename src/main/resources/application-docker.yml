@@ -12,3 +12,8 @@ spring:
     redis:
       host: redis
       port: 6379
+
+
+bot:
+  token: 8155117188:AAFz_IFtGzFRcN4yj9IiI-Lul11zIR9BuV0
+  username: neverfapnofapantipornbot
