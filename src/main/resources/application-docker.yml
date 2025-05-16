@@ -5,12 +5,14 @@ spring:
     password: root123
   jpa:
     hibernate:
-      ddl-auto: create
-    show-sql: false
+      ddl-auto: update
+    show-sql: true
 
+  cache:
+    type: redis
   data:
     redis:
-      host: localhost
+      host: redis
       port: 6379
 
 
