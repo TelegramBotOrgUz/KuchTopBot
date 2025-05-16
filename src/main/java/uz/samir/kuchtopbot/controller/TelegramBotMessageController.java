@@ -19,7 +19,6 @@ import uz.samir.kuchtopbot.telegram.WillUpBot;
 public class TelegramBotMessageController {
 
     private final ApplicationEventPublisher eventPublisher;
-    private final WillUpBot bot;
 
     public void sendMessage(long chatId, String text) {
         sendMessage(chatId, text, null);
@@ -31,16 +30,5 @@ public class TelegramBotMessageController {
 
     public void deleteMessage(long chatId, int messageId) {
         eventPublisher.publishEvent(new BotDeleteEvent(this, chatId, messageId));
-    }
-
-    public Message sendMessageWithResult(Long chatId, String text, InlineKeyboardMarkup markup) {
-        SendMessage message = new SendMessage(chatId.toString(), text);
-        message.setReplyMarkup(markup);
-        try {
-            return bot.execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import uz.samir.kuchtopbot.buttons.InlineKeyboardUtil;
+import uz.samir.kuchtopbot.controller.MessageSender;
 import uz.samir.kuchtopbot.model.User;
 import uz.samir.kuchtopbot.service.cache.UserStateService;
 import uz.samir.kuchtopbot.service.modelService.UserService;
@@ -22,6 +23,7 @@ public class RelapseScheduler {
     private final MessageService messageService;
     private final InlineKeyboardUtil inlineKeyboardUtil;
     private final UserStateService userStateService;
+    private final MessageSender messageSender;
 
     // ⏰ Har kuni ertalab soat 08:00 da ishga tushadi
     @Scheduled(cron = "0 0 8 * * *")
@@ -38,7 +40,7 @@ public class RelapseScheduler {
             userStateService.getLastMessageId(chatId).ifPresent(oldMsgId ->
                     messageController.deleteMessage(chatId, oldMsgId)
             );
-            Message message = messageController.sendMessageWithResult(
+            Message message = messageSender.sendMessageWithResult(
                     chatId,
                     text,
                     inlineKeyboardUtil.getRelapseDailyCheckButtons(chatId) // ✅ Ha | ❌ Yo‘q tugmalar
