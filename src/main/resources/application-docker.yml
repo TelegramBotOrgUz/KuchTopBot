@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/kuchtop_db
+    username: kuchtop_user
+    password: strongpassword
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+
+  data:
+    redis:
+      host: redis
+      port: 6379
