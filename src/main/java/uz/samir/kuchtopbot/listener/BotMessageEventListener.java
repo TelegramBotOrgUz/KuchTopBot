@@ -14,7 +14,6 @@ import uz.samir.kuchtopbot.service.bot.TelegramBotService;
 @RequiredArgsConstructor
 public class BotMessageEventListener implements ApplicationListener<BotMessageEvent> {
 
-    private final TelegramBotMessageController messageController;
     private final TelegramBotService telegramBotService;
 
     @Override
@@ -22,7 +21,7 @@ public class BotMessageEventListener implements ApplicationListener<BotMessageEv
         long chatId = event.getChatId();
         String text = event.getText();
         ReplyKeyboard replyMarkup = event.getReplyKeyboard();
-        
+
         SendMessage sendMessage = new SendMessage(Long.toString(chatId), text);
         if (replyMarkup != null) {
             sendMessage.setReplyMarkup(replyMarkup);

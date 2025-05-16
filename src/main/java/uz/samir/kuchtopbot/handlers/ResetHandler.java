@@ -28,8 +28,8 @@ public class ResetHandler {
 
 
     public void askForRelapseReason(Long chatId) {
-        String message = "Relaps sababini kiriting yoki quyidagi tugmalardan birini tanlang:";
-        messageController.sendMessage(chatId, message, inlineKeyboardUtil.askForRelapseReason());
+        String message = messageService.getMessage(chatId,"enter_relapse_note");
+        messageController.sendMessage(chatId, message, inlineKeyboardUtil.askForRelapseReason(chatId));
     }
 
 
