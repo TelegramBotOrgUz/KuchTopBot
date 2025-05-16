@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/kuchtop_db
-    username: kuchtop_user
-    password: strongpassword
+    url: jdbc:postgresql://localhost:5432/nofap
+    username: postgres
+    password: root123
   jpa:
     hibernate:
       ddl-auto: create
