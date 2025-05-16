@@ -1,4 +1,4 @@
-name: Build and Deploy to VPS
+name: Deploy Spring Boot Project (Docker ishlatmasdan)
 
 on:
   push:
@@ -6,27 +6,58 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup JDK 21
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'temurin'
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-      - name: Build project
-        run: mvn clean package -DskipTests
+      - name: Disable strict host key checking
+        run: |
+          echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
 
-      - name: Copy JAR to VPS
-        uses: appleboy/scp-action@v0.1.6
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: root
-          key: ${{ secrets.VPS_SSH_KEY }}
-          source: target/KuchTopBot-0.0.1-SNAPSHOT.jar
-          target: /root/app.jar
+      - name: Clone or update project on VPS
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your.vps.ip '
+            if [ -d ~/project ]; then
+              cd ~/project && git pull origin main;
+            else
+              git clone https://github.com/yourusername/yourrepo.git ~/project;
+            fi
+          '
+
+      - name: Run tests on VPS
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your.vps.ip '
+            cd ~/project && mvn test
+          '
+
+      - name: Build project on VPS (skip tests)
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your.vps.ip '
+            cd ~/project && mvn clean package -DskipTests
+          '
+
+      - name: Deploy application on VPS with screen
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your.vps.ip '
+            JAR=~/project/target/yourapp.jar
+            SCREEN_NAME="spring_app"
+            LOG_DIR=~/project/logs
+            LOG_FILE="$LOG_DIR/spring_app.log"
+            
+            mkdir -p "$LOG_DIR"
+            
+            if screen -list | grep -q "$SCREEN_NAME"; then
+              screen -S $SCREEN_NAME -X quit
+            fi
+            
+            screen -dmS $SCREEN_NAME bash -c "java -jar $JAR > $LOG_FILE 2>&1"
+          '
