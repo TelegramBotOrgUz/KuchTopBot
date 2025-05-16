@@ -35,4 +35,23 @@ public class InlineKeyboardUtil {
         keyboardMarkup.setKeyboard(List.of(row1, row2, row3));
         return keyboardMarkup;
     }
+
+    public InlineKeyboardMarkup getRelapseDailyCheckButtons(Long chatId) {
+        String yes = messageService.getMessage(chatId, "yes");
+        String no = messageService.getMessage(chatId, "no");
+
+        InlineKeyboardButton yesButton = new InlineKeyboardButton(yes);
+        yesButton.setCallbackData("relapse_yes");
+
+        InlineKeyboardButton noButton = new InlineKeyboardButton(no);
+        noButton.setCallbackData("relapse_no");
+
+        List<List<InlineKeyboardButton>> rows = List.of(
+                List.of(yesButton, noButton)
+        );
+
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        markup.setKeyboard(rows);
+        return markup;
+    }
 }

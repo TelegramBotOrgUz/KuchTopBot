@@ -41,8 +41,6 @@ public class WillUpBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
             Long chatId = update.getMessage().getChatId();
-//            Integer messageId = update.getMessage().getMessageId();
-
 
             if ("/start".equals(messageText)) {
                 startCommandHandler.startUserCommand(chatId);
@@ -84,6 +82,8 @@ public class WillUpBot extends TelegramLongPollingBot {
                         messageService.getMessage(chatId, "relapse_default_note"));
                 case "write_reason" -> resetHandler.handleResetReason(chatId);
                 case "cancel" -> mainMenuHandler.showMainMenu(chatId);
+                case "relapse_yes" -> resetHandler.askForRelapseReason(chatId);
+                case "relapse_no" -> mainMenuHandler.handleRelapseSuccess(chatId);
             }
         }
     }
