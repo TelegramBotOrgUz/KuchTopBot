@@ -46,6 +46,7 @@ public class StartCommandHandler {
 
             telegramBotMessageController.sendMessage(chatId, message);
             userStateService.saveState(chatId, BotState.START_NOFAP.name());
+            mainMenuHandler.showMainMenu(chatId);
         } else {
             telegramBotMessageController.sendMessage(chatId, messages.getMessage(chatId, "language_changed"));
             userStateService.saveState(chatId, BotState.MAIN_MENU.name());
