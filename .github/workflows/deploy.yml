@@ -1,50 +1,47 @@
-name: Build and Deploy Safely
+name: Safe Deploy via Base64
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  build-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'temurin'
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
 
-      - name: Build project
-        run: mvn clean package -DskipTests
+    - name: Build JAR
+      run: mvn clean package -DskipTests
 
-      - name: Zip JAR
-        run: |
-          mkdir upload
-          cp target/KuchTopBot-0.0.1-SNAPSHOT.jar upload/app.jar
-          cd upload && zip app.zip app.jar
+    - name: Encode JAR to base64
+      run: |
+        base64 target/KuchTopBot-0.0.1-SNAPSHOT.jar > app.b64
 
-      - name: Upload zipped JAR to VPS
-        uses: appleboy/scp-action@v0.1.6
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: root
-          key: ${{ secrets.VPS_SSH_KEY }}
-          source: upload/app.zip
-          target: /root/
+    - name: Upload encoded JAR to VPS
+      uses: appleboy/scp-action@v0.1.6
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: root
+        key: ${{ secrets.VPS_SSH_KEY }}
+        source: app.b64
+        target: /root/
 
-      - name: SSH to VPS and deploy
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: root
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            cd /root
-            unzip -o app.zip
-            docker compose down
-            docker compose up --build -d
+    - name: SSH to VPS and deploy
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: root
+        key: ${{ secrets.VPS_SSH_KEY }}
+        script: |
+          cd /root
+          base64 -d app.b64 > app.jar
+          docker compose down
+          docker compose up -d --build
