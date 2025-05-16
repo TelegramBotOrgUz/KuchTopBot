@@ -1,4 +1,4 @@
-name: Deploy Spring Boot Project (Docker ishlatmasdan)
+name: Deploy KuchTopBot Project (Docker ishlatmasdan)
 
 on:
   push:
@@ -25,32 +25,32 @@ jobs:
 
       - name: Clone or update project on VPS
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your.vps.ip '
-            if [ -d ~/project ]; then
-              cd ~/project && git pull origin main;
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
+            if [ -d ~/KuchTopBot ]; then
+              cd ~/KuchTopBot && git pull origin main;
             else
-              git clone https://github.com/yourusername/yourrepo.git ~/project;
+              git clone https://github.com/TelegramBotOrgUz/KuchTopBot.git ~/KuchTopBot;
             fi
           '
 
       - name: Run tests on VPS
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your.vps.ip '
-            cd ~/project && mvn test
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
+            cd ~/KuchTopBot && mvn test
           '
 
       - name: Build project on VPS (skip tests)
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your.vps.ip '
-            cd ~/project && mvn clean package -DskipTests
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
+            cd ~/KuchTopBot && mvn clean package -DskipTests
           '
 
       - name: Deploy application on VPS with screen
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your.vps.ip '
-            JAR=~/project/target/yourapp.jar
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
+            JAR=~/KuchTopBot/target/KuchTopBot-0.0.1-SNAPSHOT.jar
             SCREEN_NAME="spring_app"
-            LOG_DIR=~/project/logs
+            LOG_DIR=~/KuchTopBot/logs
             LOG_FILE="$LOG_DIR/spring_app.log"
             
             mkdir -p "$LOG_DIR"
