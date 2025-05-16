@@ -1,42 +1,50 @@
-name: Build & Deploy to VPS
+# Workflow nomi
+name: Build and Deploy
 
+# Qaysi voqealarda ishga tushadi
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # Faqat main branch ga push bo‘lganda ishga tushadi
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  build-deploy:
+    runs-on: ubuntu-latest  # Ish OS: so‘nggi Ubuntu versiyasi
 
     steps:
-      - name: Checkout source code
+      # 1. Kodni klonlash (checkout qilish)
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Java
+      # 2. Java muhitini tayyorlash (JDK 21)
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: '21'        # Java versiyasi
+          distribution: 'temurin'  # Java taqsimoti
 
-      - name: Build with Maven
+      # 3. Loyihani build qilish (testlarsiz)
+      - name: Build project
         run: mvn clean package -DskipTests
 
+      # 4. Tayyorlangan .jar faylni VPS ga ko‘chirish
       - name: Copy JAR to VPS
         uses: appleboy/scp-action@v0.1.6
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: root
-          key: ${{ secrets.VPS_SSH_KEY }}
-          source: target/KuchTopBot-0.0.1-SNAPSHOT.jar
-          target: /root/app.jar
+          host: ${{ secrets.VPS_HOST }}          # VPS IP manzili (GitHub Secrets)
+          username: root                        # VPS foydalanuvchisi
+          key: ${{ secrets.VPS_SSH_KEY }}       # VPS private SSH kaliti (Secrets)
+          source: target/KuchTopBot-0.0.1-SNAPSHOT.jar  # Build qilingan fayl manzili
+          target: /root/app.jar                 # VPS da joylashgan fayl nomi
 
-      - name: SSH to VPS and restart app
+      # 5. VPS ga SSH orqali ulanish va Docker konteynerlarni qayta ishga tushirish
+      - name: SSH to VPS and deploy
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: root
-          key: ${{ secrets.VPS_SSH_KEY }}
+          host: ${{ secrets.VPS_HOST }}        # VPS IP
+          username: root                      # Foydalanuvchi
+          key: ${{ secrets.VPS_SSH_KEY }}       # SSH kalit
           script: |
             cd /root
-            docker compose down
-            docker compose up --build -d
+            docker compose down                # Docker konteynerlarni to‘xtatish
+            docker compose up -d --build      # Yangi build bilan konteynerlarni ishga tushirish (detached rejimda)
