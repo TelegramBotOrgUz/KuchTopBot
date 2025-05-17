@@ -17,12 +17,11 @@ import java.util.List;
 public class MotivationScheduler {
 
     private final UserService userService;
-    private final StreakService streakService;
     private final MotivationService motivationService;
     private final TelegramBotMessageController messageController;
     private final UserStateService userStateService;
 
-    @Scheduled(cron = "0 0 8 * * *") // Har kuni ertalab soat 08:00
+    @Scheduled(cron = "0 0 7 * * *") // Har kuni ertalab soat 08:00
     public void sendDailyMotivations() {
         List<User> activeUsers = userService.getAllWithActiveStreak(); // Faol foydalanuvchilar
 

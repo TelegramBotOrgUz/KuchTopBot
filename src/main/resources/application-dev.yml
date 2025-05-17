@@ -14,7 +14,7 @@ spring:
     password: root123
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
   cache:
     type: redis
@@ -26,3 +26,10 @@ spring:
 bot:
   token: 7531833643:AAG9o0sQPIief9bm9-unEuKaJmfjb22XkCg
   username: KuchtopBot
+
+sentry:
+  dsn: https://5e702e1d33077919152dca5d1fc4e77a@o4509339210809344.ingest.de.sentry.io/4509339212447824
+  environment: production
+  release: kuchtop@1.0.0
+  traces-sample-rate: 1.0
+  debug: true
