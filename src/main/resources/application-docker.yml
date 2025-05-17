@@ -15,6 +15,12 @@ spring:
       host: localhost
       port: 6379
 
+sentry:
+  dsn: https://5e702e1d33077919152dca5d1fc4e77a@o4509339210809344.ingest.de.sentry.io/4509339212447824
+  environment: production
+  release: kuchtop@1.0.0
+  traces-sample-rate: 1.0
+  debug: true
 
 bot:
   token: 8155117188:AAFz_IFtGzFRcN4yj9IiI-Lul11zIR9BuV0
