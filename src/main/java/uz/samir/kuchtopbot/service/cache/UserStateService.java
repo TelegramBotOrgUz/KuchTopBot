@@ -3,6 +3,7 @@ package uz.samir.kuchtopbot.service.cache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import uz.samir.kuchtopbot.model.template.BotState;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -37,7 +38,8 @@ public class UserStateService {
     }
 
     public String getState(Long chatId) {
-        return redisTemplate.opsForValue().get(STATE_PREFIX + chatId);
+        return Optional.ofNullable(redisTemplate.opsForValue().get(STATE_PREFIX + chatId))
+                .orElse(BotState.STARTED.name());
     }
 
     public void saveLanguage(Long chatId, String language) {
