@@ -45,7 +45,12 @@ public class RelapseScheduler {
                     text,
                     inlineKeyboardUtil.getRelapseDailyCheckButtons(chatId) // ✅ Ha | ❌ Yo‘q tugmalar
             );
-            userStateService.saveLastMessageId(chatId, message.getMessageId());
+
+           try {
+                userStateService.saveLastMessageId(chatId, message.getMessageId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
