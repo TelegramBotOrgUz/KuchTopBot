@@ -5,7 +5,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # Build bosqichidan tayyor .jar faylni nusxalash
-COPY --from=build /app/target/KuchTopBot-0.0.1-SNAPSHOT.jar app.jar
+COPY target/KuchTopBot-0.0.1-SNAPSHOT.jar app.jar
 
 # Ilovaning portini ochish
 EXPOSE 8080
