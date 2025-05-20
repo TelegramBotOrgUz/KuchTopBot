@@ -1,16 +1,4 @@
-# 1. Build bosqichi: Maven yordamida loyihani build qilish
-FROM maven:3.9.6-eclipse-temurin-21 AS build
-
-# Ish papkasi /app
-WORKDIR /app
-
-# Loyihani konteyner ichiga nusxalash
-COPY . .
-
-# Loyihani paketlash, testlarni o‘tkazmaydi
-RUN mvn clean package -DskipTests
-
-# 2. Ishga tushirish bosqichi: Java Runtime muhitidan foydalanish
+# 1. Ishga tushirish bosqichi: Java Runtime muhitidan foydalanish
 FROM eclipse-temurin:21-jdk
 
 # Ish papkasi /app
