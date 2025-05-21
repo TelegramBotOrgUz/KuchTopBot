@@ -54,7 +54,7 @@ jobs:
 
       - name: Deploy on VPS
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@YOUR_VPS_IP '
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
             docker pull sharipovsamir480/kuchtopbot:latest &&
             docker stop kuchtopbot-container || true &&
             docker rm kuchtopbot-container || true &&
