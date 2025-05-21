@@ -54,9 +54,9 @@ jobs:
 
       - name: Deploy on VPS
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@YOUR_VPS_IP '
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
+            docker ps -q --filter "publish=8080" | xargs -r docker stop
+            docker ps -aq --filter "publish=8080" | xargs -r docker rm
             docker pull sharipovsamir480/kuchtopbot:latest &&
-            docker stop kuchtopbot-container || true &&
-            docker rm kuchtopbot-container || true &&
             docker run -d --name kuchtopbot-container -p 8080:8080 sharipovsamir480/kuchtopbot:latest
           '
