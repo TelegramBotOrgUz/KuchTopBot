@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline with Docker Compose
 
 on:
   push:
@@ -39,7 +39,7 @@ jobs:
       - name: Build Docker image
         run: docker build -t sharipovsamir480/kuchtopbot:latest .
 
-      - name: Push Docker image to Docker Hub
+      - name: Push Docker image
         run: docker push sharipovsamir480/kuchtopbot:latest
 
       - name: Setup SSH key
@@ -52,11 +52,10 @@ jobs:
         run: |
           echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
 
-      - name: Deploy on VPS
+      - name: Deploy with docker-compose on VPS
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
-            docker stop kuchtopbot-container || true
-            docker rm kuchtopbot-container || true
-            docker pull sharipovsamir480/kuchtopbot:latest &&
-            docker run -d --name kuchtopbot-container -p 8080:8080 sharipovsamir480/kuchtopbot:latest
+            cd /root/bot/KuchTopBot &&
+            docker-compose pull &&
+            docker-compose up -d --remove-orphans
           '
