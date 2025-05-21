@@ -55,6 +55,7 @@ jobs:
       - name: Deploy with docker-compose on VPS
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
+            echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin &&
             cd /root/bot/KuchTopBot &&
             docker-compose pull &&
             docker-compose up -d --remove-orphans
