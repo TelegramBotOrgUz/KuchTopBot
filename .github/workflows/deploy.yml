@@ -59,4 +59,4 @@ jobs:
             cd /root/bot/KuchTopBot &&
             docker-compose pull &&
             docker-compose up -d --remove-orphans
-          '
+          ' 
