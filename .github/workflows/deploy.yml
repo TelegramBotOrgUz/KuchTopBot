@@ -59,4 +59,4 @@ jobs:
             docker stop kuchtopbot-container || true &&
             docker rm kuchtopbot-container || true &&
             docker run -d --name kuchtopbot-container -p 8080:8080 sharipovsamir480/kuchtopbot:latest
-          '
+          ' 
