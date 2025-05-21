@@ -1,4 +1,4 @@
-name: Deploy KuchTopBot Project (Docker ishlatmasdan)
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,12 +6,41 @@ on:
       - main
 
 jobs:
-  deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build project with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build Docker image
+        run: docker build -t sharipovsamir480/kuchtopbot:latest .
+
+      - name: Push Docker image to Docker Hub
+        run: docker push sharipovsamir480/kuchtopbot:latest
 
       - name: Setup SSH key
         run: |
@@ -23,41 +52,11 @@ jobs:
         run: |
           echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
 
-      - name: Clone or update project on VPS
+      - name: Deploy on VPS
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
-            if [ -d ~/KuchTopBot ]; then
-              cd ~/KuchTopBot && git pull origin main;
-            else
-              git clone https://github.com/TelegramBotOrgUz/KuchTopBot.git ~/KuchTopBot;
-            fi
-          '
-
-      - name: Run tests on VPS
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
-            cd ~/KuchTopBot && mvn test
-          '
-
-      - name: Build project on VPS (skip tests)
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
-            cd ~/KuchTopBot && mvn clean package -DskipTests
-          '
-
-      - name: Deploy application on VPS with screen
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@146.190.30.105 '
-            JAR=~/KuchTopBot/target/KuchTopBot-0.0.1-SNAPSHOT.jar
-            SCREEN_NAME="spring_app"
-            LOG_DIR=~/KuchTopBot/logs
-            LOG_FILE="$LOG_DIR/spring_app.log"
-            
-            mkdir -p "$LOG_DIR"
-            
-            if screen -list | grep -q "$SCREEN_NAME"; then
-              screen -S $SCREEN_NAME -X quit
-            fi
-            
-            screen -dmS $SCREEN_NAME bash -c "java -jar $JAR > $LOG_FILE 2>&1"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@YOUR_VPS_IP '
+            docker pull sharipovsamir480/kuchtopbot:latest &&
+            docker stop kuchtopbot-container || true &&
+            docker rm kuchtopbot-container || true &&
+            docker run -d --name kuchtopbot-container -p 8080:8080 sharipovsamir480/kuchtopbot:latest
           '
